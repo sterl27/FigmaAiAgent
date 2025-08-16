@@ -1,5 +1,4 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Check } from 'lucide-react';
 import { useState } from "react";
 
 export default function ColorPalleteCard({ color }: { color: { hex: string, usage: string } }) {
