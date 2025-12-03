@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       level,
       key: key || 'C',
       interactive: interactive || false
-    });
+    }, { toolCallId: 'manual-call', messages: [] });
 
     return NextResponse.json(result);
   } catch (error) {

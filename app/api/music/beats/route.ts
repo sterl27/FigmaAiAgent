@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       tempo,
       complexity: complexity || 'medium',
       description
-    });
+    }, { toolCallId: 'manual-call', messages: [] });
 
     return NextResponse.json(result);
   } catch (error) {
