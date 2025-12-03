@@ -451,22 +451,20 @@ export default function LyricsAnalyzer({ onAnalysisComplete }: LyricsAnalysisPro
                     <h4 className="font-medium mb-2">Sentiment Breakdown</h4>
                     <div className="bg-gray-50 p-4 rounded">
                         <div 
-                          className={`h-4 rounded-full transition-all duration-500 sentiment-bar-width ${
+                          className={`h-4 rounded-full transition-all duration-500 ${
                             analysisResult.analysis.sentiment.overall === 'positive' ? 'bg-green-500' :
                             analysisResult.analysis.sentiment.overall === 'negative' ? 'bg-red-500' :
                             analysisResult.analysis.sentiment.overall === 'mixed' ? 'bg-yellow-500' :
                             'bg-gray-500'
                           }`}
-                          data-width={analysisResult.analysis.sentiment.intensity * 100}
+                          style={{ width: `${analysisResult.analysis.sentiment.intensity * 100}%` }}
                         ></div>
-                        ></div>
-                      </div>
-                      <p className="text-sm text-gray-600 mt-2">
-                        The song exhibits {analysisResult.analysis.sentiment.overall} sentiment with {
-                          analysisResult.analysis.sentiment.intensity > 0.7 ? 'high' :
-                          analysisResult.analysis.sentiment.intensity > 0.4 ? 'moderate' : 'low'
-                        } intensity.
-                      </p>
+                        <p className="text-sm text-gray-600 mt-2">
+                          The song exhibits {analysisResult.analysis.sentiment.overall} sentiment with {
+                            analysisResult.analysis.sentiment.intensity > 0.7 ? 'high' :
+                            analysisResult.analysis.sentiment.intensity > 0.4 ? 'moderate' : 'low'
+                          } intensity.
+                        </p>
                     </div>
                   </div>
                 </div>
