@@ -155,8 +155,8 @@ export default function BeatGenerator({ onBeatGenerated }: BeatGeneratorProps) {
   const saveBeatToMemory = async (beatData: BeatData) => {
     setIsSaving(true);
     try {
-      const beatId = `beat-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const beatId = `beat-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+      const beatWithId = { ...beatData, id: beatId, timestamp: new Date().toISOString() };
       
       await fetch('/api/memory/save', {
         method: 'POST',
@@ -574,9 +574,8 @@ export default function BeatGenerator({ onBeatGenerated }: BeatGeneratorProps) {
             
             {similarBeats.length > 0 ? (
               <div className="grid gap-3">
-                {similarBeats.map((beat: SimilarBeat, index: number) => (
                 {similarBeats.map((beat: SimilarBeat) => (
-                  <div key={beat.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                  <div key={beat.id} className="border rounded-lg p-4 hover:bg-gray-50 flex items-center justify-between">
                       <div>
                         <h4 className="font-medium">{beat.metadata.genre} Beat</h4>
                         <p className="text-sm text-gray-600">
@@ -593,7 +592,6 @@ export default function BeatGenerator({ onBeatGenerated }: BeatGeneratorProps) {
                       >
                         Load
                       </Button>
-                    </div>
                   </div>
                 ))}
               </div>
