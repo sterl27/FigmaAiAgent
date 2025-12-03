@@ -58,7 +58,7 @@ export const GeneratedComponent = ({ id, generatedComponent, onCopyToClipboard }
                     <div className="py-4 px-4">
                         <h3 className="text-lg font-bold mb-2">Color Palette</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {generatedComponent._metadata.colorDetails.map((color, index) => (
+                            {generatedComponent._metadata.colorDetails.map((color: any, index: number) => (
                                 <ColorPalleteCard key={index} color={color} />
                             ))}
                         </div>
