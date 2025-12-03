@@ -1,3 +1,5 @@
+'use client';
+
 import ColorPalleteCard from '@/app/design/colorPalleteCard';
 import { ComponentOutput } from '@/app/design/designAgent';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
