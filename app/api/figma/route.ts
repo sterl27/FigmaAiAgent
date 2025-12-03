@@ -1,3 +1,6 @@
+/* The above TypeScript code is a server-side script that performs web scraping on a list of URLs
+stored in a `urls.md` file related to Figma documentation. Here is a breakdown of what the code
+does: */
 import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { resources, ResourceType } from '@/lib/db/schema/resources';
@@ -10,15 +13,15 @@ import { describeImageOrGifFromResource } from '@/lib/google';
 
 const app = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
 
-export async function GET(req: Request) {
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
-    const currentFilePath = import.meta.url;
-    const currentDirectory = path.dirname(currentFilePath);
+export async function GET() {
 
-    const urlsFile = path.join(currentDirectory, 'urls.md');
-    const urlsFileWithoutFilePrefix = urlsFile.replace('file:', '');
+    // Use process.cwd() to get the project root, then navigate to the urls.md file
+    const urlsFile = path.join(process.cwd(), 'app', 'api', 'figma', 'urls.md');
 
-    const data = await fs.promises.readFile(urlsFileWithoutFilePrefix, 'utf8');
+    const data = await fs.promises.readFile(urlsFile, 'utf8');
     const urlsArray = data.split('\n');
 
     for (var url of urlsArray) {
@@ -30,17 +33,17 @@ export async function GET(req: Request) {
             console.log("Resource already exists: ", url);
             // Get the url of the images and gifs from the resource
             // These urls are in the format: [name](https://help.figma.com/hc/article_attachments/{id})
-            const extractedData = resource[0].content.match(/\[[^\[\]]+\]\(https:\/\/help\.figma\.com\/hc\/article_attachments\/(\d+)\)/g);
+            const extractedData = resource[0].content.match(/\[[^\[\]]+\]\(https:\/\/help\.figma\.com\/hc\/article_attachments\/(\d+)\)/g) || [];
             
             // Now I need to verify if in [name] part there is .svg 
-            const extractedDataWithoutSvg = extractedData?.filter(item => !item.includes('.svg') && item.includes('article_attachments'));
+            const extractedDataWithoutSvg = extractedData.filter(item => !item.includes('.svg') && item.includes('article_attachments'));
             // Now I need to remove the [name] part and keep only the url
-            const extractedUrlsFromArticleAttachments = extractedDataWithoutSvg?.map(item => item.split('](')[1].replace(')', ''));
+            const extractedUrlsFromArticleAttachments = extractedDataWithoutSvg.map(item => item.split('](')[1].replace(')', ''));
 
             // resource[0].content is a markdown content. I need to extract all the urls in this markdown that ends with .png
             // THey only need to be an url and end with png. thats it. i need a regex that is able to extract this
-            const urlsThatEndWithPng = resource[0].content.match(/\bhttps?:\/\/\S+\.png\b/g);
-            const urlsThatEndWithPngAndAreNotArticleAttachments = urlsThatEndWithPng?.filter(item => !item.includes('article_attachments'));
+            const urlsThatEndWithPng = resource[0].content.match(/\bhttps?:\/\/\S+\.png\b/g) || [];
+            const urlsThatEndWithPngAndAreNotArticleAttachments = urlsThatEndWithPng.filter(item => !item.includes('article_attachments'));
             console.log("urlsThatEndWithPngAndAreNotArticleAttachments: ", urlsThatEndWithPngAndAreNotArticleAttachments);
 
             var imagesAndGifsUrls: string[] = []

@@ -1,0 +1,509 @@
+openapi: 3.1.0
+info:
+  title: FigmaAiAgent API
+  description: |
+    AI-powered API for Figma documentation assistance, UI component generation, and lyric analysis.
+    
+    This API combines multiple AI models to provide comprehensive design and content assistance:
+    - Figma documentation search and assistance
+    - AI-generated UI components with CSS/HTML
+    - Lyric analysis and enhancement
+    
+    ## Authentication
+    Currently uses user IDs for data association. No authentication tokens required for development.
+  version: 1.0.0
+  contact:
+    name: FigmaAiAgent Support
+    url: https://github.com/Saraceni/FigmaAiAgent
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000/api
+    description: Development server
+  - url: https://figma-ai-agent.vercel.app/api
+    description: Production server
+
+paths:
+  /design:
+    post:
+      summary: Generate UI components
+      description: Create HTML/CSS components using AI based on user descriptions
+      operationId: generateComponent
+      tags:
+        - Design & Components
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userRequest
+              properties:
+                userRequest:
+                  type: string
+                  description: Description of the component to generate
+                  example: "Create a modern button with hover effects"
+                constraints:
+                  type: object
+                  properties:
+                    colorPalette:
+                      type: array
+                      items:
+                        type: string
+                        pattern: '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+                      example: ["#3B82F6", "#FFFFFF"]
+                    responsive:
+                      type: boolean
+                      default: true
+      responses:
+        '200':
+          description: Component generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComponentOutput'
+        '400':
+          description: Bad request - missing userRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /copy:
+    post:
+      summary: Convert to Figma clipboard data
+      description: Convert HTML/CSS to Figma-compatible clipboard format
+      operationId: copyToFigma
+      tags:
+        - Design & Components
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - html
+                - css
+              properties:
+                html:
+                  type: string
+                  description: HTML content to convert
+                css:
+                  type: string
+                  description: CSS styles to convert
+      responses:
+        '200':
+          description: Clipboard data generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  clipboardDataFromAPI:
+                    type: string
+                    description: Base64-encoded Figma clipboard data
+
+  /chat:
+    post:
+      summary: Chat with AI assistant
+      description: Conversational AI with tool support for Figma assistance
+      operationId: chatWithAI
+      tags:
+        - Chat & AI Assistance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - messages
+                - sessionId
+              properties:
+                messages:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ChatMessage'
+                modelProvider:
+                  type: string
+                  enum: [openai, google]
+                  default: openai
+                sessionId:
+                  type: string
+                  description: Unique session identifier
+      responses:
+        '200':
+          description: Streaming response with AI-generated content
+          content:
+            text/event-stream:
+              schema:
+                type: string
+    get:
+      summary: Get chat history
+      description: Retrieve chat history for a specific session
+      operationId: getChatHistory
+      tags:
+        - Chat & AI Assistance
+      parameters:
+        - name: sessionId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Session identifier
+      responses:
+        '200':
+          description: Chat history retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ChatMessage'
+
+  /figma:
+    get:
+      summary: Scrape Figma documentation
+      description: Scrape and index Figma documentation for search
+      operationId: scrapeFigmaDocumentation
+      tags:
+        - Figma Documentation
+      responses:
+        '200':
+          description: Documentation processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  processed:
+                    type: integer
+                    example: 150
+                  errors:
+                    type: integer
+                    example: 2
+                  message:
+                    type: string
+                    example: Documentation updated successfully
+
+  /analyze:
+    post:
+      summary: Analyze lyrics
+      description: Analyze lyrics for complexity, rhyme, flow, energy, and structure
+      operationId: analyzeLyrics
+      tags:
+        - Lyric Analysis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - lyrics
+                - userId
+              properties:
+                lyrics:
+                  type: string
+                  description: Lyric content to analyze
+                title:
+                  type: string
+                  description: Song title
+                artist:
+                  type: string
+                  description: Artist name
+                userId:
+                  type: string
+                  description: User identifier
+      responses:
+        '200':
+          description: Analysis completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  analysis:
+                    $ref: '#/components/schemas/LyricAnalysis'
+                  lyricId:
+                    type: string
+                    description: Generated lyric ID
+        '400':
+          description: Bad request - missing required fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /enhance:
+    post:
+      summary: Enhance lyrics
+      description: Enhance lyrics using different styles or custom prompts
+      operationId: enhanceLyrics
+      tags:
+        - Lyric Analysis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - originalLyrics
+                - userId
+              properties:
+                originalLyrics:
+                  type: string
+                  description: Original lyric content
+                style:
+                  type: string
+                  enum: [tyler-creator, kendrick, drake, j-cole, complex-metaphor, emotional-depth]
+                  description: Enhancement style
+                customPrompt:
+                  type: string
+                  description: Custom enhancement prompt (alternative to style)
+                userId:
+                  type: string
+                  description: User identifier
+                lyricId:
+                  type: string
+                  description: Original lyric ID
+      responses:
+        '200':
+          description: Enhancement completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  enhancedLyrics:
+                    type: string
+                    description: Enhanced lyric content
+                  enhancementId:
+                    type: string
+                    description: Generated enhancement ID
+                  style:
+                    type: string
+                    description: Style used for enhancement
+                  createdAt:
+                    type: string
+                    format: date-time
+        '400':
+          description: Bad request - missing required fields or invalid style
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /library:
+    get:
+      summary: Get user's lyric library
+      description: Retrieve user's library of lyrics with analyses and enhancements
+      operationId: getUserLibrary
+      tags:
+        - Lyric Analysis
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: User identifier
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [all, analyzed, enhanced, bookmarked]
+            default: all
+          description: Filter type
+      responses:
+        '200':
+          description: Library retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LibraryItem'
+                  total:
+                    type: integer
+                    description: Total number of items
+        '400':
+          description: Bad request - missing userId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    ComponentOutput:
+      type: object
+      properties:
+        html:
+          type: string
+          description: Generated HTML code
+        css:
+          type: string
+          description: Generated CSS styles
+        colorDetails:
+          type: array
+          items:
+            type: object
+            properties:
+              hex:
+                type: string
+                pattern: '^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+                description: Color hex code
+              usage:
+                type: string
+                description: How the color is used
+        stylingNotes:
+          type: string
+          description: Explanation of design decisions
+
+    ChatMessage:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Message ID
+        role:
+          type: string
+          enum: [user, assistant, system]
+          description: Message role
+        content:
+          type: string
+          description: Message content
+        createdAt:
+          type: string
+          format: date-time
+          description: Message timestamp
+
+    LyricAnalysis:
+      type: object
+      properties:
+        complexity:
+          $ref: '#/components/schemas/AnalysisMetric'
+        rhyme:
+          $ref: '#/components/schemas/AnalysisMetric'
+        flow:
+          $ref: '#/components/schemas/AnalysisMetric'
+        energy:
+          $ref: '#/components/schemas/AnalysisMetric'
+        structure:
+          $ref: '#/components/schemas/AnalysisMetric'
+
+    AnalysisMetric:
+      type: object
+      properties:
+        score:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Metric score
+        confidence:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Confidence level
+        details:
+          type: string
+          description: Detailed explanation
+
+    LibraryItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Lyric ID
+        title:
+          type: string
+          description: Song title
+        artist:
+          type: string
+          description: Artist name
+        content:
+          type: string
+          description: Lyric content
+        createdAt:
+          type: string
+          format: date-time
+        isBookmarked:
+          type: boolean
+          description: Whether the item is bookmarked
+        analyses:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              complexity:
+                $ref: '#/components/schemas/AnalysisMetric'
+              createdAt:
+                type: string
+                format: date-time
+        enhancements:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              style:
+                type: string
+              content:
+                type: string
+              createdAt:
+                type: string
+                format: date-time
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        code:
+          type: string
+          description: Error code
+        details:
+          type: object
+          description: Additional error context
+
+  securitySchemes:
+    UserID:
+      type: apiKey
+      in: header
+      name: X-User-ID
+      description: User identifier for data association
+
+tags:
+  - name: Design & Components
+    description: AI-powered UI component generation and Figma integration
+  - name: Chat & AI Assistance
+    description: Conversational AI with Figma documentation assistance
+  - name: Figma Documentation
+    description: Documentation scraping and indexing
+  - name: Lyric Analysis
+    description: AI-powered lyric analysis and enhancement

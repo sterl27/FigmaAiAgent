@@ -1,6 +1,8 @@
+/* The above code is a TypeScript server-side script that serves as an AI assistant designed to
+interact with users through HTTP requests. Here is a breakdown of its main functionalities: */
 import { openai } from '@ai-sdk/openai';
 import { google } from "@ai-sdk/google";
-import { InvalidToolArgumentsError, NoSuchToolError, streamText, ToolExecutionError, createDataStreamResponse } from 'ai';
+import { InvalidToolArgumentsError, NoSuchToolError, streamText, ToolExecutionError } from 'ai';
 import { findRelevantContent } from '@/lib/ai/embedding';
 import { z } from 'zod';
 import { getMediasDescriptionFromUrl } from '@/lib/actions/media';
@@ -8,9 +10,9 @@ import { db } from '@/lib/db';
 import { chat } from '@/lib/db/schema/chat';
 import { eq } from 'drizzle-orm';
 import { waitUntil } from '@vercel/functions'
-import { callClaudeApi, ComponentOutput, ComponentOutputSchema } from '@/app/design/designAgent';
+import { callClaudeApi, ComponentOutput } from '@/app/design/designAgent';
 import { componentOutputs } from '@/lib/db/schema/componentOutput';
-import { getImagesFromPexels } from '@/lib/images/pexels';
+// import { getImagesFromPexels } from '@/lib/images/pexels';
 import { getImagesFromGoogle } from '@/lib/google/getImagesFromGoogle';
 
 // Allow streaming responses up to 60 seconds
@@ -63,10 +65,10 @@ const saveToDbPromise = (sessionId: string, lastUserMessage: any, response: stri
       if (generatedComponent) {
         db.insert(componentOutputs).values({
           chatId: chat[0].id, // Using the actual chat.id instead of sessionId
-          html: generatedComponent._metadata.html,
-          css: generatedComponent._metadata.css,
+          html: generatedComponent._metadata?.html,
+          css: generatedComponent._metadata?.css,
           stylingNotes: generatedComponent.stylingNotes || '',
-          colorDetails: JSON.stringify(generatedComponent._metadata.colorDetails || {})
+          colorDetails: JSON.stringify(generatedComponent._metadata?.colorDetails || {})
         }).then(() => {
           console.log("component saved to database");
           resolve(chat[0].id);
@@ -102,7 +104,10 @@ export async function POST(req: Request) {
       let generatedComponent: ComponentOutput | null = null
       if (messages.length > 0) {
         const lastMessage = messages[messages.length - 1]
-        if (lastMessage.role === 'assistant') {
+        if (
+          lastMessage.role === 'assistant' &&
+          Array.isArray(lastMessage.toolInvocations)
+        ) {
           for (var i = 0; i < lastMessage.toolInvocations.length; i++) {
             const toolInvocation = lastMessage.toolInvocations[i]
             if (toolInvocation.toolName === 'createWebComponent' && toolInvocation.state === 'result') {

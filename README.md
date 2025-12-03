@@ -27,11 +27,11 @@ The AI agent also have access to tools to generate user interface componens with
 - Node.js (version >= v18.17.0)
 - npm or yarn
 - A database (e.g., PostgreSQL) for storing resources and embeddings
-- A Firecrawl API key (<a href="https://www.firecrawl.dev/" target="_blank">https://www.firecrawl.dev/</a>)
-- A OpenAI API key (<a href="https://openai.com/index/openai-api/" target="_blank">https://openai.com/index/openai-api/</a>)
-- A Google Generative AI API key (<a href="https://cloud.google.com/ai/generative-ai" target="_blank">https://cloud.google.com/ai/generative-ai</a>)
-- A Pexels API key (<a href="https://www.pexels.com/api/documentation/" target="_blank">https://www.pexels.com/api/documentation/</a>)
-- A Claude API key (<a href="https://console.anthropic.com/settings/keys" target="_blank">https://console.anthropic.com/settings/keys</a>)
+- A Firecrawl API key ([https://www.firecrawl.dev/](https://www.firecrawl.dev/))
+- An OpenAI API key ([https://openai.com/index/openai-api/](https://openai.com/index/openai-api/))
+- A Google Generative AI API key ([https://cloud.google.com/ai/generative-ai](https://cloud.google.com/ai/generative-ai))
+- A Pexels API key ([https://www.pexels.com/api/documentation/](https://www.pexels.com/api/documentation/))
+- A Claude API key ([https://console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys))
 
 ### Environment Variables
 
@@ -87,7 +87,7 @@ ANTHROPIC_API_KEY=<your_claude_api_key>
 ### API Endpoint
 
 - **GET /api/figma**
-  - **First execution**: 
+  - **First execution**:
     - Reads `urls.md`, which contains all URLs for the Figma Design documentation.
     - Extracts text content from each page.
     - Creates text embeddings for each resource in the database.
@@ -106,6 +106,54 @@ Each resource in the database represents a URL from the Figma Design documentati
 - **Embeddings**: Vector representations of the resource for efficient retrieval.
 - **Media**: Descriptions of images scraped from the documentation.
 
+## API Documentation
+
+Comprehensive API documentation is available in the following formats:
+
+### 📖 Interactive Documentation
+
+- **Markdown Guide**: [`docs/API.md`](docs/API.md) - Complete API reference with examples
+- **OpenAPI Specification**: [`docs/openapi.yaml`](docs/openapi.yaml) - Machine-readable API spec
+
+### 🚀 Quick API Overview
+
+The API provides the following main endpoints:
+
+- **`POST /api/chat`** - Conversational AI with Figma documentation assistance
+- **`POST /api/design`** - Generate UI components using AI
+- **`POST /api/copy`** - Convert HTML/CSS to Figma clipboard format
+- **`GET /api/figma`** - Scrape and index Figma documentation
+- **`POST /api/analyze`** - Analyze lyrics for complexity, rhyme, flow, energy
+- **`POST /api/enhance`** - Enhance lyrics with different AI styles
+- **`GET /api/library`** - Retrieve user's lyric library
+
+### 🔧 API Features
+
+- **Multi-Model AI Support**: OpenAI, Google Gemini, and Anthropic Claude
+- **Streaming Responses**: Real-time chat with Server-Sent Events
+- **RAG Integration**: Semantic search across Figma documentation
+- **Component Generation**: AI-powered HTML/CSS creation
+- **Vector Search**: Efficient embedding-based content retrieval
+
+### 📝 Example Usage
+
+```javascript
+// Generate a UI component
+const response = await fetch('/api/design', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    userRequest: 'Create a modern button with hover effects',
+    constraints: { colorPalette: ['#3B82F6', '#FFFFFF'] }
+  })
+});
+
+const component = await response.json();
+console.log(component.html, component.css);
+```
+
+For detailed endpoint documentation, request/response schemas, and more examples, see [`docs/API.md`](docs/API.md).
+
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request for any enhancements or bug fixes.
@@ -122,7 +170,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Pexels](https://pexels.com/) for the images.
 
 
-# This project was bootsrapped with the Vercel AI SDK RAG Guide Starter Project
+## This project was bootsrapped with the Vercel AI SDK RAG Guide Starter Project
 
 This is the starter project for the Vercel AI SDK [Retrieval-Augmented Generation (RAG) guide](https://sdk.vercel.ai/docs/guides/rag-chatbot).
 
@@ -134,5 +182,5 @@ This project will use the following stack:
 - [Vercel AI SDK](https://sdk.vercel.ai/docs)
 - [OpenAI](https://openai.com)
 - [Drizzle ORM](https://orm.drizzle.team)
-- [Postgres](https://www.postgresql.org/) with [ pgvector ](https://github.com/pgvector/pgvector)
+- [Postgres](https://www.postgresql.org/) with [pgvector](https://github.com/pgvector/pgvector)
 - [shadcn-ui](https://ui.shadcn.com) and [TailwindCSS](https://tailwindcss.com) for styling

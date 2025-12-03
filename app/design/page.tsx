@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button";
-import TextArea from "@/components/ui/textArea";
+import { Textarea } from "@/components/ui/textArea";
 import ColorPalleteCard from "./colorPalleteCard";
 
 
@@ -74,10 +74,10 @@ export default function DesignComponentGenerator() {
 
   return (
     <div className="flex flex-col items-center justify-center w-screen h-screen overflow-hidden bg-[#F3F4F6]">
-      <div className="flex items-center w-full justify-center" style={{ alignItems: !!generatedComponent ? 'start' : 'center' }}>
+      <div className={`flex items-center w-full justify-center ${generatedComponent ? 'align-start' : 'align-center'}`}>
         <div className="flex flex-col items-start justify-center w-full max-w-md p-4">
           <h1 className="text-2xl font-bold mb-2">New Design</h1>
-          <TextArea className="flex-shrink-0 w-full max-w-md min-h-40 p-2" value={prompt} onChange={(e) => setPrompt(e.target.value)}
+          <Textarea className="flex-shrink-0 w-full max-w-md min-h-40 p-2" value={prompt} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setPrompt(e.target.value)}
             placeholder="Describe the component you want to create..." />
           <Button className="mt-4" disabled={isLoading} onClick={handleGenerate}>
             {isLoading ? (

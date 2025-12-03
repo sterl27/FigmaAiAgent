@@ -1,7 +1,7 @@
-const { fontFamily } = require("tailwindcss/defaultTheme")
+import { fontFamily } from 'tailwindcss/defaultTheme'
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const config: import('tailwindcss').Config = {
   darkMode: ["class"],
   content: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"],
   theme: {
@@ -48,24 +48,40 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      borderColor: {
+        DEFAULT: "hsl(var(--border))",
+      },
+      backgroundImage: {
+        'musaix-gradient': 'linear-gradient(135deg, hsl(var(--musaix-gradient-start)), hsl(var(--musaix-gradient-end)))',
+        'musaix-text-gradient': 'linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)))',
+      },
+      boxShadow: {
+        'purple-glow': '0 0 20px rgba(147, 51, 234, 0.3)',
+      },
+      backdropBlur: {
+        mobile: '8px',
+        desktop: '12px',
+      },
       borderRadius: {
         lg: `var(--radius)`,
         md: `calc(var(--radius) - 2px)`,
         sm: "calc(var(--radius) - 4px)",
+        // Custom border radius key for Musaix components
+        musaix: 'var(--radius)',
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
-        gabarito: ['"Gabarito"', 'sans-serif'],
-        afacad: ['"Afacad"', 'sans-serif'],
+        gabarito: ['Gabarito', 'sans-serif'],
+        afacad: ['Afacad', 'sans-serif'],
       },
       keyframes: {
         "accordion-down": {
-          from: { height: 0 },
+          from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: 0 },
+          to: { height: "0" },
         },
         "bounce": {
           '0%, 100%': { transform: 'translateY(0)' },
@@ -81,5 +97,11 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/aspect-ratio'),
+  ],
 }
+
+export default config;

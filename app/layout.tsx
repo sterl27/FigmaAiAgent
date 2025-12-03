@@ -2,18 +2,21 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Analytics } from '@vercel/analytics/next';
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner"
-import Script from 'next/script'
+// Update the import path if 'sonner' is located elsewhere, for example:
+import { Toaster } from "@/components/ui/sonner";
+// Or, if the file does not exist, create 'sonner.tsx' or 'sonner/index.tsx' in the appropriate directory.
+import { ThemeProvider } from "@/src/components/theme/ThemeProvider";
+import Script from 'next/script';
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Figma AI Assistant | Instant Design Help & UI Automation",
-  description: "Get expert answers to Figma questions and automate UI component creation. Design smarter and faster with AI-powered assistance for all skill levels.",
-  keywords: ["Figma", "AI", "UI design", "design automation", "UI components", "design assistant"],
-  authors: [{ name: "Rafael Saraceni", url: "https://saraceni.me/" }],
-  creator: "Rafael Saraceni",
-  metadataBase: new URL("https://figma-ai-agent.vercel.app"),
+  title: "Musaix Pro | AI-Powered Lyric Analysis & Enhancement",
+  description: "Discover deeper meanings in your favorite songs with AI-powered analysis. Enhance lyrics, explore themes, and uncover artistic insights through intelligent conversation.",
+  keywords: ["lyrics", "AI", "music analysis", "song meanings", "lyric enhancement", "music AI"],
+  authors: [{ name: "Musaix Pro", url: "https://musaix.pro/" }],
+  creator: "Musaix Pro",
+  metadataBase: new URL("https://musaix.pro/"),
   alternates: {
     canonical: "/",
     languages: {
@@ -32,9 +35,9 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Figma AI Assistant | Instant Design Help & UI Automation",
-    description: "Get expert answers to Figma questions and automate UI component creation. Design smarter and faster with AI-powered assistance for all skill levels.",
-    url: "https://figma-ai-agent.vercel.app/", // Replace with your actual URL
+    title: "Musaix Pro | AI-Powered Lyric Analysis & Enhancement",
+    description: "Discover deeper meanings in your favorite songs with AI-powered analysis. Enhance lyrics, explore themes, and uncover artistic insights through intelligent conversation.",
+    url: "https://musaix.pro/",
     images: [
       {
         url: "/app_preview.png", // Path to the image in the public folder
@@ -46,41 +49,56 @@ export const metadata: Metadata = {
         url: "/avatar.png", // Square image for mobile previews
         width: 1200,
         height: 1200,
-        alt: "Figma AI Assistant",
+        alt: "Musaix Pro AI Assistant",
+      },
+      // Fallback image if /app_preview.png is missing
+      {
+        url: "/fallback_preview.png",
+        width: 1200,
+        height: 630,
+        alt: "Fallback Preview Image",
       },
     ],
     type: "website",
     locale: "en_US",
-    siteName: "Figma AI Assistant",
+    siteName: "Musaix Pro",
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Figma AI Assistant | Instant Design Help & UI Automation",
-    description: "Get expert answers to Figma questions and automate UI component creation. Design smarter and faster with AI-powered assistance for all skill levels.",
+    title: "Musaix Pro | AI-Powered Lyric Analysis & Enhancement",
+    description: "Discover deeper meanings in your favorite songs with AI-powered analysis. Enhance lyrics, explore themes, and uncover artistic insights through intelligent conversation.",
     images: ['/app_preview.png'],
     creator: "@saraceni_br",
     site: "@saraceni_br",
   },
 };
 
+// The suppressHydrationWarning prop is used on <html> to prevent hydration mismatch warnings
+// caused by dynamic theme or font class changes between server-side rendering and client hydration.
+// This is necessary because ThemeProvider and font loading may result in different class names on SSR vs client.
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        {children}
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster />
+        </ThemeProvider>
         <Analytics />
       </body>
       <Script src="https://scripts.simpleanalyticscdn.com/latest.js" />
     </html>
   );
 }
-
-
 
 // Long description 1
 // Figma AI Assistant transforms how designers work by providing instant answers to Figma questions and automating UI component creation. Skip the learning curve and design documentation—simply ask and create. Whether you're troubleshooting design issues, seeking best practices, or wanting to generate components on the fly, this AI-powered tool streamlines your workflow and boosts productivity. Elevate your Figma experience with intelligent assistance that helps you design smarter, not harder.

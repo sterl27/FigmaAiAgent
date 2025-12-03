@@ -1,0 +1,288 @@
+{
+  "info": {
+    "name": "FigmaAiAgent API",
+    "description": "Complete API collection for FigmaAiAgent - AI-powered Figma assistance and lyric analysis",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "user-123",
+      "type": "string"
+    },
+    {
+      "key": "sessionId",
+      "value": "session-{{$randomUUID}}",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Design & Components",
+      "item": [
+        {
+          "name": "Generate UI Component",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userRequest\": \"Create a modern button with hover effects and rounded corners\",\n  \"constraints\": {\n    \"colorPalette\": [\"#3B82F6\", \"#FFFFFF\", \"#1E3A8A\"],\n    \"responsive\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/design",
+              "host": ["{{baseUrl}}"],
+              "path": ["design"]
+            },
+            "description": "Generate a UI component using AI based on user description and constraints"
+          },
+          "response": []
+        },
+        {
+          "name": "Copy to Figma",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"html\": \"<button class='modern-btn'>Click Me</button>\",\n  \"css\": \".modern-btn { background: #3B82F6; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; } .modern-btn:hover { background: #1E3A8A; transform: translateY(-2px); }\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/copy",
+              "host": ["{{baseUrl}}"],
+              "path": ["copy"]
+            },
+            "description": "Convert HTML/CSS to Figma-compatible clipboard data"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for AI-powered UI component generation and Figma integration"
+    },
+    {
+      "name": "Chat & AI Assistance",
+      "item": [
+        {
+          "name": "Chat with AI Assistant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"How do I create components in Figma?\"\n    }\n  ],\n  \"modelProvider\": \"openai\",\n  \"sessionId\": \"{{sessionId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/chat",
+              "host": ["{{baseUrl}}"],
+              "path": ["chat"]
+            },
+            "description": "Chat with AI assistant for Figma help and component generation"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Chat History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/chat?sessionId={{sessionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["chat"],
+              "query": [
+                {
+                  "key": "sessionId",
+                  "value": "{{sessionId}}"
+                }
+              ]
+            },
+            "description": "Retrieve chat history for a specific session"
+          },
+          "response": []
+        }
+      ],
+      "description": "Conversational AI endpoints with tool support"
+    },
+    {
+      "name": "Figma Documentation",
+      "item": [
+        {
+          "name": "Scrape Figma Documentation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/figma",
+              "host": ["{{baseUrl}}"],
+              "path": ["figma"]
+            },
+            "description": "Scrape and index Figma documentation for search capabilities"
+          },
+          "response": []
+        }
+      ],
+      "description": "Documentation scraping and indexing endpoints"
+    },
+    {
+      "name": "Lyric Analysis",
+      "item": [
+        {
+          "name": "Analyze Lyrics",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lyrics\": \"Verse one here with some sample lyrics\\nThat demonstrate the flow and rhyme\\nWith complexity that shows the skill\\nOf crafting words that fit in time\",\n  \"title\": \"Sample Song\",\n  \"artist\": \"Demo Artist\",\n  \"userId\": \"{{userId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/analyze",
+              "host": ["{{baseUrl}}"],
+              "path": ["analyze"]
+            },
+            "description": "Analyze lyrics for complexity, rhyme, flow, energy, and structure"
+          },
+          "response": []
+        },
+        {
+          "name": "Enhance Lyrics (Style)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"originalLyrics\": \"Simple lyrics that need enhancement\\nBasic flow and common rhyme\",\n  \"style\": \"kendrick\",\n  \"userId\": \"{{userId}}\",\n  \"lyricId\": \"lyric-456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/enhance",
+              "host": ["{{baseUrl}}"],
+              "path": ["enhance"]
+            },
+            "description": "Enhance lyrics using predefined AI styles"
+          },
+          "response": []
+        },
+        {
+          "name": "Enhance Lyrics (Custom Prompt)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"originalLyrics\": \"Simple lyrics that need enhancement\\nBasic flow and common rhyme\",\n  \"customPrompt\": \"Rewrite these lyrics with nautical themes and ocean metaphors\",\n  \"userId\": \"{{userId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/enhance",
+              "host": ["{{baseUrl}}"],
+              "path": ["enhance"]
+            },
+            "description": "Enhance lyrics using custom prompts"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Library",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/library?userId={{userId}}&type=all",
+              "host": ["{{baseUrl}}"],
+              "path": ["library"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "type",
+                  "value": "all",
+                  "description": "Options: all, analyzed, enhanced, bookmarked"
+                }
+              ]
+            },
+            "description": "Retrieve user's lyric library with analyses and enhancements"
+          },
+          "response": []
+        }
+      ],
+      "description": "AI-powered lyric analysis and enhancement endpoints"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Generate a unique session ID if not already set",
+          "if (!pm.variables.get('sessionId') || pm.variables.get('sessionId') === '') {",
+          "    pm.variables.set('sessionId', 'session-' + Date.now());",
+          "}",
+          "",
+          "// Set default user ID if not provided",
+          "if (!pm.variables.get('userId') || pm.variables.get('userId') === '') {",
+          "    pm.variables.set('userId', 'user-' + Math.random().toString(36).substr(2, 9));",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Basic response validation",
+          "pm.test('Status code is successful', function () {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);",
+          "});",
+          "",
+          "pm.test('Response time is reasonable', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(30000);",
+          "});",
+          "",
+          "// Content-Type validation",
+          "pm.test('Content-Type is present', function () {",
+          "    pm.expect(pm.response.headers.get('Content-Type')).to.exist;",
+          "});"
+        ]
+      }
+    }
+  ]
+}

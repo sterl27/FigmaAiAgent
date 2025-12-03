@@ -59,14 +59,16 @@ Always structure your response in these sections:
 When the user provides specific constraints like color palettes, design systems, or responsive breakpoints, strictly adhere to these requirements in your generated component.`
 
 export interface ComponentOutput {
+    _metadata: any;
     stylingNotes: string;
-    _metadata: {
+    component: {
         html: string;
         css: string;
         colorDetails: {
             hex: string;
             usage: string;
         }[];
+        stylingNotes: string;
     };
 }
 
