@@ -12,14 +12,13 @@ function _combineCssAndHtml(css: string, html: string): string {
  */
 async function codeToDesign({ html, css }: { html: string; css: string; }): Promise<{ clipboardDataFromAPI: string; }> {
   const response = await fetch("https://api.to.design/html", {
-    body: JSON.stringify({ html: _combineCssAndHtml(css, html), clip: true }),
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
       // Pass the API key as a function argument or retrieve it from a secure config
       "Authorization": `Bearer ${process.env.NEXT_PUBLIC_CODE_TO_DESIGN_API_KEY}`,
     },
-    // Combine CSS and HTML before sending to the API
-    body: JSON.stringify({ html: combineCssAndHtml(css, html), clip: true }),
+    body: JSON.stringify({ html: _combineCssAndHtml(css, html), clip: true }),
   });
 
   if (!response.ok) {
@@ -35,7 +34,6 @@ async function codeToDesign({ html, css }: { html: string; css: string; }): Prom
   } else {
     clipboardDataFromAPI = await response.text();
   }
-  return { clipboardDataFromAPI };
   return { clipboardDataFromAPI };
 }
 
