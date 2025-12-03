@@ -41,7 +41,7 @@ export const BotCard = ({
   const ImageRenderer = (props: React.ImgHTMLAttributes<HTMLImageElement>) => {
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img {...props} className={`w-full max-h-[400px] md:max-h-[500px] object-contain cursor-pointer hover:outline hover:outline-2 hover:outline-black ${props.className ?? ''}`} onClick={() => props.src && window.open(props.src, '_blank')} />
+      <img {...props} alt={props.alt || 'image'} className={`w-full max-h-[400px] md:max-h-[500px] object-contain cursor-pointer hover:outline hover:outline-2 hover:outline-black ${props.className ?? ''}`} onClick={() => props.src && window.open(props.src, '_blank')} />
     );
   }
 
