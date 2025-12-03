@@ -1,6 +1,6 @@
-/* Removed Google Fonts imports */
-
-/* If not using Tailwind, remove these lines. Otherwise, ensure Tailwind is set up to process this file. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
  
 :root {
   --background: 0 0% 100%;
@@ -148,7 +148,6 @@
     background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-}
 
 /* Mobile optimizations */
 @media (max-width: 768px) {
