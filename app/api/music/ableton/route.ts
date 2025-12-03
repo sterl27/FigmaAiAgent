@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       device,
       parameter,
       value
-    });
+    }, { toolCallId: 'manual-call', messages: [] });
 
     return NextResponse.json(result);
   } catch (error) {
